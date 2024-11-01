@@ -25,9 +25,9 @@ const CheckOut = () => {
       service_id: _id,
       price,
     };
-    console.log(booking);
+    // console.log(booking);
 
-    fetch("http://localhost:5000/bookings", {
+    fetch("https://car-doctor-server-lilac-beta.vercel.app/bookings", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -36,7 +36,7 @@ const CheckOut = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         if (data.insertedId) {
           alert("service book successfully");
         }

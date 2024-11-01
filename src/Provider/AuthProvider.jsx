@@ -7,6 +7,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import axios from "axios";
 
 export const AuthContext = createContext();
 const auth = getAuth(app);
@@ -32,9 +33,38 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
+      const userEmail = currentUser?.email || user?.email;
+      const loggedUser = { email: userEmail };
+
       setUser(currentUser);
-      console.log("current user", currentUser);
+      // console.log("current user", currentUser);
       setLoading(false);
+      // if user exists then issue a token
+      if (currentUser) {
+        axios
+          .post(
+            "https://car-doctor-server-lilac-beta.vercel.app/jwt",
+            loggedUser,
+            {
+              withCredentials: true,
+            }
+          )
+          .then((res) => {
+            // console.log("token response", res.data);
+          });
+      } else {
+        axios
+          .post(
+            "https://car-doctor-server-lilac-beta.vercel.app/logout",
+            loggedUser,
+            {
+              withCredentials: true,
+            }
+          )
+          .then((res) => {
+            // console.log(res.data);
+          });
+      }
     });
     return () => {
       return unSubscribe();
